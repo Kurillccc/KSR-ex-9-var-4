@@ -2,7 +2,8 @@ import matplotlib.pyplot as plt
 import tkinter as tk
 import matplotlib
 
-matplotlib.use('TkAgg')
+# matplotlib.use('TkAgg')
+matplotlib.use('Agg')
 
 from modules.RungeKuttSystem import *
 
@@ -16,15 +17,14 @@ def update_plot():
     h0 = float(h0_entry.get())
     xMax = float(xMax_entry.get())
     x_0 = float(x0_entry.get())
-    y_0 = float(u0_entry.get())
     U1_0 = float(u1_0_entry.get())
     U2_0 = float(u2_0_entry.get())
-    task = task_var.get()
     step_type = step_type_var.get()
-    a1 = float(a_entry.get())
-    a3 = float(b_entry.get())
+    a1 = float(a1_entry.get())
+    a3 = float(a3_entry.get())
+    m = float(m_entry.get())
 
-    func1 = RungeKuttaSystem(h0, x_0, U1_0, U2_0, maxCount, epsilonG, a1, a3)
+    func1 = RungeKuttaSystem(h0, x_0, U1_0, U2_0, maxCount, epsilonG, a1, a3, m)
     data = np.array([func1.variableSteps(xMax, maxError)]) if step_type == "Переменный" else np.array(
         [func1.fixecStep(xMax)])
     x, u1, u2 = data.T
@@ -92,6 +92,7 @@ def update_plot():
 
     fig, axarr = plt.subplots(3, sharex=True, figsize=(8, 10))
 
+
     axarr[0].plot(x, u1, label='U1(x)')
     axarr[0].set_ylabel('U1')
     axarr[0].legend()
@@ -154,15 +155,15 @@ if __name__ == "__main__":
     xMax_entry.insert(0, "1.69")
 
     x0_label = ttk.Label(frame, text="x0:")
-    x0_label.grid(row=4, column=0)
+    x0_label.grid(row=2, column=2)
     x0_entry = ttk.Entry(frame)
-    x0_entry.grid(row=4, column=1)
+    x0_entry.grid(row=2, column=3)
     x0_entry.insert(0, "1")
 
     u0_label = ttk.Label(frame, text="u0:")
-    u0_label.grid(row=5, column=0)
+    u0_label.grid(row=3, column=2)
     u0_entry = ttk.Entry(frame)
-    u0_entry.grid(row=5, column=1)
+    u0_entry.grid(row=3, column=3)
     u0_entry.insert(0, "1")
 
     epsilonG_label = ttk.Label(frame, text="Епселон граничный:")
@@ -174,23 +175,29 @@ if __name__ == "__main__":
     task_var = tk.StringVar()
 
     step_type_label = ttk.Label(frame, text="Выберите шаг:")
-    step_type_label.grid(row=10, column=0)
+    step_type_label.grid(row=0, column=7)
     step_type_var = tk.StringVar()
     step_type_var.set("Фиксированный")
     step_type_option = ttk.OptionMenu(frame, step_type_var, "Фиксированный","Фиксированный", "Переменный")
-    step_type_option.grid(row=10, column=1)
+    step_type_option.grid(row=0, column=8)
 
-    a_label = ttk.Label(frame, text="a1:")
-    a_label.grid(row=7, column=0)
-    a_entry = ttk.Entry(frame)
-    a_entry.grid(row=7, column=1)
-    a_entry.insert(0, "1")
+    a1_label = ttk.Label(frame, text="a1:")
+    a1_label.grid(row=1, column=7)
+    a1_entry = ttk.Entry(frame)
+    a1_entry.grid(row=1, column=8)
+    a1_entry.insert(0, "1")
 
-    b_label = ttk.Label(frame, text="a3:")
-    b_label.grid(row=8, column=0)
-    b_entry = ttk.Entry(frame)
-    b_entry.grid(row=8, column=1)
-    b_entry.insert(0, "1")
+    a3_label = ttk.Label(frame, text="a3:")
+    a3_label.grid(row=2, column=7)
+    a3_entry = ttk.Entry(frame)
+    a3_entry.grid(row=2, column=8)
+    a3_entry.insert(0, "1")
+
+    m_label = ttk.Label(frame, text="m:")
+    m_label.grid(row=3, column=7)
+    m_entry = ttk.Entry(frame)
+    m_entry.grid(row=3, column=8)
+    m_entry.insert(0, "1")
 
     update_button = ttk.Button(frame, text="Обновить", command=update_plot)
     update_button.grid(row=11, columnspan=2)

@@ -1,15 +1,16 @@
 import numpy as np
 
 class RungeKuttaSystem:
-    def __init__(self, stepSize, initialX, initialU1, initialU2, maxCount, epsilonG, a, b):
+    def __init__(self, stepSize, initialX, initialU1, initialU2, maxCount, epsilonG, a1, a3, m):
         self.stepSize = stepSize
         self.initialX = initialX
         self.initialU1 = initialU1
         self.initialU2 = initialU2
         self.maxCount = maxCount
         self.epsilonG = epsilonG
-        self.a = a
-        self.b = b
+        self.a1 = a1
+        self.a3 = a3
+        self.m = m
         self.V2 = []
         self.OLP = []
         self.Hi = []
@@ -20,7 +21,7 @@ class RungeKuttaSystem:
         return u2
 
     def du2(self, x, u1, u2):
-        return -self.a * u2 - self.b * np.sin(u1)
+        return -((self.a1/self.m) * u2 + (self.a3/self.m) * (u2**3))
 
     def calculateNextU(self, x, u1, u2, stepSize):
         k11 = self.du1(x,u1, u2)
