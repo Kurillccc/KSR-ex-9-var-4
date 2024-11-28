@@ -14,7 +14,7 @@ class RungeKuttaSystem:
         self.V2 = []
         self.OLP = []
         self.Hi = []
-
+        self.C1 = []
         self.C2 = []
 
     def du1(self, x, u1, u2):
