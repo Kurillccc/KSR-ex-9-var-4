@@ -7,6 +7,10 @@ from modules.RungeKuttSystem import *
 from tkinter import ttk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
+import matplotlib
+matplotlib.use('TkAgg')  # Устанавливаем бэкенд TkAgg перед импортом pyplot
+import matplotlib.pyplot as plt
+
 def C(x0,y0):
     return y0 / (np.exp(x0))
 
@@ -23,7 +27,7 @@ def update_plot():
     a3 = float(a3_entry.get())
     m = float(m_entry.get())
 
-    
+
     func = RungeKutta(h0, x_0, y_0, maxCount, epsilonG, a1, a3, m)
     data = np.array([func.variableStep(xMax, maxError)]) if step_type == "Переменный" else np.array(
         [func.fixedStep(xMax)])
@@ -90,14 +94,61 @@ def update_plot():
 
 
     plt.cla()
-    plt.plot(x, y, label=f'v(x)')
+    plt.plot(x, y, label=f'u(x)')
     plt.xlabel("x")
     plt.ylabel("u")
 
     plt.legend()
 
-    plt.title("График v(x)")
-    plt.draw()
+    plt.title("График u(x)")
+
+    # plt.plot(x, t, label=f'u(t)')
+    # plt.xlabel("t")
+    # plt.ylabel("u")
+    #
+    # plt.legend()
+    #
+    # plt.title("График u(t)")
+
+
+
+    # Исследование зависимости от параметров a1 и a3
+    a1_values = [0.2, 0.5, 1.0]
+    a3_values = [0.05, 0.1, 0.2]
+
+    plt.figure(figsize=(14, 6))
+
+    # Влияние a1
+    plt.subplot(1, 2, 1)
+    for a1_val in a1_values:
+        def f_a1(u):
+            return - (a1_val * u + a3 * u ** 3) / m
+
+        t_vals, u_vals = rk4_adaptive(x_0, y_0, maxCount, h0, epsilonG, f_a1)
+        plt.plot(t_vals, u_vals, label=f'a1 = {a1_val}')
+    plt.xlabel('Время t, с')
+    plt.ylabel('Скорость u, м/с')
+    plt.title('Влияние a1 на решение')
+    plt.grid(True)
+    plt.legend()
+
+
+    # Влияние a3
+    plt.subplot(1, 2, 2)
+    for a3_val in a3_values:
+        def f_a3(u):
+            return - (a1 * u + a3_val * u ** 3) / m
+
+        t_vals, u_vals = rk4_adaptive(x_0, y_0, maxCount, h0, epsilonG, f_a3)
+        plt.plot(t_vals, u_vals, label=f'a3 = {a3_val}')
+    plt.xlabel('Время t, с')
+    plt.ylabel('Скорость u, м/с')
+    plt.title('Влияние a3 на решение')
+    plt.grid(True)
+    plt.legend()
+
+    plt.show()
+
 
 if __name__ == "__main__":
     root = tk.Tk()
