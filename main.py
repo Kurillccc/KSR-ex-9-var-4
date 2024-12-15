@@ -97,34 +97,82 @@ def update_plot():
     plt.plot(x, y, label=f'u(x)')
     plt.xlabel("x")
     plt.ylabel("u")
-
     plt.legend()
-
     plt.title("График u(x)")
 
-    # plt.plot(x, t, label=f'u(t)')
-    # plt.xlabel("t")
-    # plt.ylabel("u")
-    #
-    # plt.legend()
-    #
-    # plt.title("График u(t)")
+
+    plt.draw()
+
+# # Зависимость от начальной скорости
+# def plot_graph():
+#     u_e_values = [1, 5.0, 10.0, 15.0]  # Список значений начальной скорости
+#     plt.figure(figsize=(10, 6))  # Размер фигуры для графика
+#
+#     # Проходим по каждому значению начальной скорости
+#     for u_e_val in u_e_values:
+#         t_vals, u_vals = rk4_adaptive(u_e_val, 0, 60, , tol, f)  # Решаем задачу для каждого значения начальной скорости
+#         plt.plot(t_vals, u_vals, label=f'u_e = {u_e_val} м/с')  # Строим график для каждого значения
+#
+#     # Настроим график
+#     plt.xlabel("Время t, с")  # Ось X - время
+#     plt.ylabel("Скорость u, м/с")  # Ось Y - скорость
+#     plt.title("Влияние начальной скорости u_e на решение")  # Заголовок графика
+#     plt.grid(True)  # Включаем сетку
+#     plt.legend()  # Легенда для графика
+#
+#     plt.show()  # Показываем график
+
+def plot_u_t():
+    # Сбор данных из полей ввода
+    epsilonG = float(epsilonG_entry.get())
+    h0 = float(h0_entry.get())
+    x_0 = float(x0_entry.get())
+    y_0 = float(u0_entry.get())
+    a1 = float(a1_entry.get())
+    a3 = float(a3_entry.get())
+    m = float(m_entry.get())
+
+    # Функция для u(t)
+    def function(u):
+        return - (a1 * u + a3 * u ** 3) / m
+
+    # Решение для u(t)
+    t_vals, u_vals = rk4_adaptive(x_0, y_0, 60, h0, epsilonG, function)
+
+    # Строим график u(t)
+    plt.figure(figsize=(8, 6))
+    plt.plot(t_vals, u_vals, label=f'u(t)')
+    plt.xlabel("t")
+    plt.ylabel("u")
+    plt.legend()
+    plt.grid(True)
+    plt.title("График u(t)")
+    plt.show()
 
 
+def plot_param_comparison():
+    # Сбор данных из полей ввода
+    epsilonG = float(epsilonG_entry.get())
+    h0 = float(h0_entry.get())
+    x_0 = float(x0_entry.get())
+    y_0 = float(u0_entry.get())
+    a1 = float(a1_entry.get())
+    a3 = float(a3_entry.get())
+    m = float(m_entry.get())
 
     # Исследование зависимости от параметров a1 и a3
     a1_values = [0.2, 0.5, 1.0]
     a3_values = [0.05, 0.1, 0.2]
 
+    # Влияние a1
     plt.figure(figsize=(14, 6))
 
-    # Влияние a1
     plt.subplot(1, 2, 1)
     for a1_val in a1_values:
         def f_a1(u):
             return - (a1_val * u + a3 * u ** 3) / m
 
-        t_vals, u_vals = rk4_adaptive(x_0, y_0, maxCount, h0, epsilonG, f_a1)
+        t_vals, u_vals = rk4_adaptive(x_0, y_0, 60, h0, epsilonG, f_a1)
         plt.plot(t_vals, u_vals, label=f'a1 = {a1_val}')
     plt.xlabel('Время t, с')
     plt.ylabel('Скорость u, м/с')
@@ -132,14 +180,12 @@ def update_plot():
     plt.grid(True)
     plt.legend()
 
-
     # Влияние a3
     plt.subplot(1, 2, 2)
     for a3_val in a3_values:
         def f_a3(u):
             return - (a1 * u + a3_val * u ** 3) / m
-
-        t_vals, u_vals = rk4_adaptive(x_0, y_0, maxCount, h0, epsilonG, f_a3)
+        t_vals, u_vals = rk4_adaptive(x_0, y_0, 60, h0, epsilonG, f_a3)
         plt.plot(t_vals, u_vals, label=f'a3 = {a3_val}')
     plt.xlabel('Время t, с')
     plt.ylabel('Скорость u, м/с')
@@ -148,7 +194,6 @@ def update_plot():
     plt.legend()
 
     plt.show()
-
 
 if __name__ == "__main__":
     root = tk.Tk()
@@ -227,7 +272,7 @@ if __name__ == "__main__":
     m_entry.insert(0, "1")
 
     update_button = ttk.Button(frame, text="Обновить", command=update_plot)
-    update_button.grid(row=11, columnspan=2)
+    update_button.grid(row=11, columnspan=11)
 
 
     columns = ("i", "xi", "vi", "v2i", "vi-v2i", "OLP", "hi", "C1", "C2", "ui", "ui-vi")
@@ -247,6 +292,16 @@ if __name__ == "__main__":
     canvas_widget = canvas.get_tk_widget()
     canvas_widget.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
+    # plot_param_button = ttk.Button(frame, text="Зависимость от V0", command=plot_graph)
+    # plot_param_button.grid(row=11, column=0, columnspan=2)
+
+
+    plot_time_button = ttk.Button(frame, text="График от времени", command=plot_u_t)
+    plot_time_button.grid(row=12, column=0, columnspan=2)
+
+    plot_param_button = ttk.Button(frame, text="Сравнение параметров a1 и a3", command=plot_param_comparison)
+    plot_param_button.grid(row=13, column=0, columnspan=2)
+# Сравнение вариантов еще надо
     update_plot()
 
     root.mainloop()
