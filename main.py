@@ -1,14 +1,14 @@
+import math
 import matplotlib.pyplot as plt
+import numpy as np
 import tkinter as tk
-import matplotlib
-
-# matplotlib.use('TkAgg')
-matplotlib.use('Agg')
 
 from modules.RungeKuttSystem import *
-
 from tkinter import ttk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+
+def C(x0,y0):
+    return y0 / (np.exp(x0))
 
 def update_plot():
     epsilonG = float(epsilonG_entry.get())
@@ -17,32 +17,30 @@ def update_plot():
     h0 = float(h0_entry.get())
     xMax = float(xMax_entry.get())
     x_0 = float(x0_entry.get())
-    U1_0 = float(u1_0_entry.get())
-    U2_0 = float(u2_0_entry.get())
+    y_0 = float(u0_entry.get())
     step_type = step_type_var.get()
     a1 = float(a1_entry.get())
     a3 = float(a3_entry.get())
     m = float(m_entry.get())
 
-    func1 = RungeKuttaSystem(h0, x_0, U1_0, U2_0, maxCount, epsilonG, a1, a3, m)
-    data = np.array([func1.variableSteps(xMax, maxError)]) if step_type == "Переменный" else np.array(
-        [func1.fixecStep(xMax)])
-    x, u1, u2 = data.T
-    V2 = func1.V2
-    OLP = func1.OLP
-    Hi = func1.Hi
-    C1 = func1.C1
-    C2 = func1.C2
+    
+    func = RungeKutta(h0, x_0, y_0, maxCount, epsilonG, a1, a3, m)
+    data = np.array([func.variableStep(xMax, maxError)]) if step_type == "Переменный" else np.array(
+        [func.fixedStep(xMax)])
+    x, y = data.T
+    V2 = func.V2
+    OLP = func.OLP
+    Hi = func.Hi
+    C1 = func.C1
+    C2 = func.C2
 
     tree.delete(*tree.get_children())
 
     Data = []
     for i in range(1, len(x)):
-        Data.append((i, x[i], [u1[i], u2[i]], V2[i - 1] if i - 1 < len(V2) else "",
-                     [V2[i - 1][0] - u1[i], V2[i - 1][1] - u2[i]] if i - 1 < len(V2) else "",
-                     OLP[i - 1] if i - 1 < len(OLP) else "", Hi[i - 1] if i - 1 < len(Hi) else "",
-                     C1[i - 1] if i - 1 < len(C1) else "",
-                     C2[i - 1] if i - 1 < len(C2) else "", "", ""))
+        Data.append((i, x[i], y[i], V2[i-1] if i-1 < len(V2) else "", y[i] - V2[i-1] if i-1 < len(V2) else "",
+                     OLP[i-1] if i-1 < len(OLP) else "", Hi[i-1] if i-1 < len(Hi) else "", C1[i-1] if i-1 < len(C1) else "",
+                     C2[i-1] if i-1 < len(C2) else ""))
 
     for inf in Data:
         tree.insert("", "end", values=inf)
@@ -90,25 +88,16 @@ def update_plot():
     tk.Label(results_window, text="Значение x для минимального Hi:").grid(row=10, column=0)
     tk.Label(results_window, text=min_h_x).grid(row=10, column=1)
 
-    fig, axarr = plt.subplots(3, sharex=True, figsize=(8, 10))
 
-
-    axarr[0].plot(x, u1, label='U1(x)')
-    axarr[0].set_ylabel('U1')
-    axarr[0].legend()
-
-    axarr[1].plot(x, u2, label='U2(x)')
-    axarr[1].set_ylabel('U2')
-    axarr[1].legend()
-
-    axarr[2].plot(u1, u2, label='U2(U1)')
-    axarr[2].set_xlabel('U1')
-    axarr[2].set_ylabel('U2')
-    axarr[2].legend()
-
+    plt.cla()
+    plt.plot(x, y, label=f'v(x)')
     plt.xlabel("x")
-    plt.tight_layout()
-    plt.show()
+    plt.ylabel("u")
+
+    plt.legend()
+
+    plt.title("График v(x)")
+    plt.draw()
 
 if __name__ == "__main__":
     root = tk.Tk()
@@ -116,19 +105,6 @@ if __name__ == "__main__":
 
     frame = ttk.Frame(root)
     frame.pack(padx=10, pady=10)
-
-    u1_0_label = ttk.Label(frame, text="U1_0:")
-    u1_0_label.grid(row=0, column=2)
-    u1_0_entry = ttk.Entry(frame)
-    u1_0_entry.grid(row=0, column=3)
-    u1_0_entry.insert(0,"1")
-
-    u2_0_label = ttk.Label(frame, text="U2_0:")
-    u2_0_label.grid(row=1, column=2)
-    u2_0_entry = ttk.Entry(frame)
-    u2_0_entry.grid(row=1, column=3)
-    u2_0_entry.insert(0,"1")
-
 
     maxCount_label = ttk.Label(frame, text="Максимальное количество итераций:")
     maxCount_label.grid(row=0, column=0)
@@ -155,15 +131,15 @@ if __name__ == "__main__":
     xMax_entry.insert(0, "1.69")
 
     x0_label = ttk.Label(frame, text="x0:")
-    x0_label.grid(row=2, column=2)
+    x0_label.grid(row=1, column=2)
     x0_entry = ttk.Entry(frame)
-    x0_entry.grid(row=2, column=3)
+    x0_entry.grid(row=1, column=3)
     x0_entry.insert(0, "1")
 
     u0_label = ttk.Label(frame, text="u0:")
-    u0_label.grid(row=3, column=2)
+    u0_label.grid(row=0, column=2)
     u0_entry = ttk.Entry(frame)
-    u0_entry.grid(row=3, column=3)
+    u0_entry.grid(row=0, column=3)
     u0_entry.insert(0, "1")
 
     epsilonG_label = ttk.Label(frame, text="Епселон граничный:")
