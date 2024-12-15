@@ -1,15 +1,13 @@
-import math
+import matplotlib
 import matplotlib.pyplot as plt
-import numpy as np
 import tkinter as tk
 
 from modules.RungeKuttSystem import *
 from tkinter import ttk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-import matplotlib
-matplotlib.use('TkAgg')  # Устанавливаем бэкенд TkAgg перед импортом pyplot
-import matplotlib.pyplot as plt
+matplotlib.use('TkAgg')
+
 
 def C(x0,y0):
     return y0 / (np.exp(x0))
@@ -27,10 +25,8 @@ def update_plot():
     a3 = float(a3_entry.get())
     m = float(m_entry.get())
 
-
     func = RungeKutta(h0, x_0, y_0, maxCount, epsilonG, a1, a3, m)
-    data = np.array([func.variableStep(xMax, maxError)]) if step_type == "Переменный" else np.array(
-        [func.fixedStep(xMax)])
+    data = np.array([func.variableStep(xMax, maxError)]) if step_type == "Переменный" else np.array([func.fixedStep(xMax)])
     x, y = data.T
     V2 = func.V2
     OLP = func.OLP
@@ -64,34 +60,32 @@ def update_plot():
     results_window = tk.Toplevel(root)
     results_window.title("Результаты")
 
-    tk.Label(results_window, text="Количество итераций:").grid(row=0, column=0)
+    tk.Label(results_window, text="Число итераций:").grid(row=0, column=0)
     tk.Label(results_window, text=number_of_iterations).grid(row=0, column=1)
 
-    tk.Label(results_window, text="Разница между правой границей и последним вычисленным значением:").grid(row=1,
-                                                                                                           column=0)
+    tk.Label(results_window, text="Разница между правой границей и последним вычисленным значением:").grid(row=1,column=0)
     tk.Label(results_window, text=difference).grid(row=1, column=1)
 
     tk.Label(results_window, text="Максимальное значение OLP:").grid(row=2, column=0)
     tk.Label(results_window, text=maxOLP).grid(row=2, column=1)
 
-    tk.Label(results_window, text="Количество делений:").grid(row=3, column=0)
+    tk.Label(results_window, text="Кол-во делений:").grid(row=3, column=0)
     tk.Label(results_window, text=C_1).grid(row=3, column=1)
 
-    tk.Label(results_window, text="Количество удвоений:").grid(row=4, column=0)
+    tk.Label(results_window, text="Кол-во удвоений:").grid(row=4, column=0)
     tk.Label(results_window, text=C_2).grid(row=4, column=1)
 
-    tk.Label(results_window, text="Максимальное значение Hi:").grid(row=5, column=0)
+    tk.Label(results_window, text="Макс. значение Hi:").grid(row=5, column=0)
     tk.Label(results_window, text=max_h).grid(row=5, column=1)
 
-    tk.Label(results_window, text="Минимальное значение Hi:").grid(row=6, column=0)
+    tk.Label(results_window, text="Мин. значение Hi:").grid(row=6, column=0)
     tk.Label(results_window, text=min_h).grid(row=6, column=1)
 
-    tk.Label(results_window, text="Значение x для максимального Hi:").grid(row=9, column=0)
+    tk.Label(results_window, text="Значение x для макс. Hi:").grid(row=9, column=0)
     tk.Label(results_window, text=max_h_x).grid(row=9, column=1)
 
-    tk.Label(results_window, text="Значение x для минимального Hi:").grid(row=10, column=0)
+    tk.Label(results_window, text="Значение x для мин. Hi:").grid(row=10, column=0)
     tk.Label(results_window, text=min_h_x).grid(row=10, column=1)
-
 
     plt.cla()
     plt.plot(x, y, label=f'u(x)')
@@ -99,7 +93,6 @@ def update_plot():
     plt.ylabel("u")
     plt.legend()
     plt.title("График u(x)")
-
 
     plt.draw()
 
@@ -123,7 +116,6 @@ def update_plot():
 #     plt.show()  # Показываем график
 
 def plot_u_t():
-    # Сбор данных из полей ввода
     epsilonG = float(epsilonG_entry.get())
     h0 = float(h0_entry.get())
     x_0 = float(x0_entry.get())
@@ -132,14 +124,10 @@ def plot_u_t():
     a3 = float(a3_entry.get())
     m = float(m_entry.get())
 
-    # Функция для u(t)
     def function(u):
         return - (a1 * u + a3 * u ** 3) / m
-
-    # Решение для u(t)
     t_vals, u_vals = rk4_adaptive(x_0, y_0, 60, h0, epsilonG, function)
 
-    # Строим график u(t)
     plt.figure(figsize=(8, 6))
     plt.plot(t_vals, u_vals, label=f'u(t)')
     plt.xlabel("t")
@@ -149,9 +137,7 @@ def plot_u_t():
     plt.title("График u(t)")
     plt.show()
 
-
 def plot_param_comparison():
-    # Сбор данных из полей ввода
     epsilonG = float(epsilonG_entry.get())
     h0 = float(h0_entry.get())
     x_0 = float(x0_entry.get())
@@ -160,13 +146,12 @@ def plot_param_comparison():
     a3 = float(a3_entry.get())
     m = float(m_entry.get())
 
-    # Исследование зависимости от параметров a1 и a3
     a1_values = [0.2, 0.5, 1.0]
     a3_values = [0.05, 0.1, 0.2]
 
     # Влияние a1
     plt.figure(figsize=(14, 6))
-
+    
     plt.subplot(1, 2, 1)
     for a1_val in a1_values:
         def f_a1(u):
@@ -202,22 +187,22 @@ if __name__ == "__main__":
     frame = ttk.Frame(root)
     frame.pack(padx=10, pady=10)
 
-    maxCount_label = ttk.Label(frame, text="Максимальное количество итераций:")
+    maxCount_label = ttk.Label(frame, text="Макс. число итераций:")
     maxCount_label.grid(row=0, column=0)
     maxCount_entry = ttk.Entry(frame)
     maxCount_entry.grid(row=0, column=1)
     maxCount_entry.insert(0, "10000")
 
-    maxError_label = ttk.Label(frame, text="Максимальная ошибка:")
+    maxError_label = ttk.Label(frame, text="Макс. ошибка:")
     maxError_label.grid(row=1, column=0)
     maxError_entry = ttk.Entry(frame)
     maxError_entry.grid(row=1, column=1)
     maxError_entry.insert(0, "0.0001")
 
-    h0_label = ttk.Label(frame, text="Начальный шаг:")
-    h0_label.grid(row=2, column=0)
+    h0_label = ttk.Label(frame, text="h0:")
+    h0_label.grid(row=0, column=2)
     h0_entry = ttk.Entry(frame)
-    h0_entry.grid(row=2, column=1)
+    h0_entry.grid(row=0, column=3)
     h0_entry.insert(0, "0.01")
 
     xMax_label = ttk.Label(frame, text="Правая граница:")
@@ -233,46 +218,46 @@ if __name__ == "__main__":
     x0_entry.insert(0, "1")
 
     u0_label = ttk.Label(frame, text="u0:")
-    u0_label.grid(row=0, column=2)
+    u0_label.grid(row=2, column=2)
     u0_entry = ttk.Entry(frame)
-    u0_entry.grid(row=0, column=3)
+    u0_entry.grid(row=2, column=3)
     u0_entry.insert(0, "1")
 
-    epsilonG_label = ttk.Label(frame, text="Епселон граничный:")
-    epsilonG_label.grid(row=6, column=0)
+    epsilonG_label = ttk.Label(frame, text="Eps. граничный:")
+    epsilonG_label.grid(row=4, column=0)
     epsilonG_entry = ttk.Entry(frame)
-    epsilonG_entry.grid(row=6, column=1)
+    epsilonG_entry.grid(row=4, column=1)
     epsilonG_entry.insert(0, "0.001")
 
     task_var = tk.StringVar()
 
-    step_type_label = ttk.Label(frame, text="Выберите шаг:")
-    step_type_label.grid(row=0, column=7)
+    step_type_label = ttk.Label(frame, text="Шаг:")
+    step_type_label.grid(row=3, column=7)
     step_type_var = tk.StringVar()
     step_type_var.set("Фиксированный")
     step_type_option = ttk.OptionMenu(frame, step_type_var, "Фиксированный","Фиксированный", "Переменный")
-    step_type_option.grid(row=0, column=8)
+    step_type_option.grid(row=3, column=8)
 
     a1_label = ttk.Label(frame, text="a1:")
-    a1_label.grid(row=1, column=7)
+    a1_label.grid(row=0, column=7)
     a1_entry = ttk.Entry(frame)
-    a1_entry.grid(row=1, column=8)
+    a1_entry.grid(row=0, column=8)
     a1_entry.insert(0, "1")
 
     a3_label = ttk.Label(frame, text="a3:")
-    a3_label.grid(row=2, column=7)
+    a3_label.grid(row=1, column=7)
     a3_entry = ttk.Entry(frame)
-    a3_entry.grid(row=2, column=8)
+    a3_entry.grid(row=1, column=8)
     a3_entry.insert(0, "1")
 
     m_label = ttk.Label(frame, text="m:")
-    m_label.grid(row=3, column=7)
+    m_label.grid(row=2, column=7)
     m_entry = ttk.Entry(frame)
-    m_entry.grid(row=3, column=8)
+    m_entry.grid(row=2, column=8)
     m_entry.insert(0, "1")
 
     update_button = ttk.Button(frame, text="Обновить", command=update_plot)
-    update_button.grid(row=11, columnspan=11)
+    update_button.grid(row=11, column=1)
 
 
     columns = ("i", "xi", "vi", "v2i", "vi-v2i", "OLP", "hi", "C1", "C2", "ui", "ui-vi")
@@ -292,15 +277,21 @@ if __name__ == "__main__":
     canvas_widget = canvas.get_tk_widget()
     canvas_widget.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
-    # plot_param_button = ttk.Button(frame, text="Зависимость от V0", command=plot_graph)
-    # plot_param_button.grid(row=11, column=0, columnspan=2)
+    plot_param_button = ttk.Button(frame, text="Влияние a1 и a3", command=plot_param_comparison)
+    plot_param_button.grid(row=0, column=30, columnspan=2)
 
+    plot_param_button = ttk.Button(frame, text="Влияние m", command=0)
+    plot_param_button.grid(row=1, column=30, columnspan=2)
 
-    plot_time_button = ttk.Button(frame, text="График от времени", command=plot_u_t)
-    plot_time_button.grid(row=12, column=0, columnspan=2)
+    plot_param_button = ttk.Button(frame, text="Влияние V0", command=0)
+    plot_param_button.grid(row=2, column=30, columnspan=2)
 
-    plot_param_button = ttk.Button(frame, text="Сравнение параметров a1 и a3", command=plot_param_comparison)
-    plot_param_button.grid(row=13, column=0, columnspan=2)
+    plot_time_button = ttk.Button(frame, text="График U(t)", command=plot_u_t)
+    plot_time_button.grid(row=3, column=30, columnspan=2)
+
+    plot_time_button = ttk.Button(frame, text="Сравнение с вар. 3", command=plot_u_t)
+    plot_time_button.grid(row=4, column=30, columnspan=2)
+
 # Сравнение вариантов еще надо
     update_plot()
 
