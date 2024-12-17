@@ -90,6 +90,7 @@ def update_plot():
     tk.Label(results_window, text=min_h_x).grid(row=10, column=1)
 
     plt.cla()
+
     plt.plot(x, y, label=f'u(x)')
     plt.xlabel("x")
     plt.ylabel("u")
@@ -113,17 +114,17 @@ def plot_speed():
     step_type = step_type_var.get()
     m = float(m_entry.get())
 
-    u_e_values = [1, 2.0, -1, -2.0, x_0]
+    u_e_values = [1, 2.0, -1, -2.0, y_0]
 
     plt.close('all')
     plt.figure(figsize=(8, 6), num="Зависимоть решения от начальной скорости")  # Размер фигуры для графика
 
     for u_e_val in u_e_values:
-        func = RungeKutta(h0, y_0, u_e_val, maxCount, epsilonG, a1, a3, m)
+        func = RungeKutta(h0, x_0, u_e_val, maxCount, epsilonG, a1, a3, m)
         data = np.array([func.variableStep(xMax, maxError)]) if step_type == "Переменный" else np.array(
             [func.fixedStep(xMax)])
-        u, x = data.T
-        plt.plot(u, x, label=f'u = {u_e_val} м/с')
+        x, u = data.T
+        plt.plot(x, u, label=f'u = {u_e_val} м/с')
     plt.xlabel('x')
     plt.ylabel('Скорость u, м/с')
     plt.title('Влияние V0')
@@ -260,6 +261,20 @@ if __name__ == "__main__":
     frame = ttk.Frame(root)
     frame.pack(padx=10, pady=10)
 
+    root.geometry("1100x800")
+    root.minsize(1100, 800)
+
+    window_width = 1100
+    window_height = 800
+
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
+
+    position_top = int(screen_height / 2 - window_height / 2)
+    position_right = int(screen_width / 2 - window_width / 2)
+
+    root.geometry(f'{window_width}x{window_height}+{position_right}+{position_top}')
+
     maxCount_label = ttk.Label(frame, text="Макс. число итераций:")
     maxCount_label.grid(row=0, column=0)
     maxCount_entry = ttk.Entry(frame)
@@ -288,7 +303,7 @@ if __name__ == "__main__":
     u0_label.grid(row=1, column=2)
     u0_entry = ttk.Entry(frame)
     u0_entry.grid(row=1, column=3)
-    u0_entry.insert(0, "1")
+    u0_entry.insert(0, "0")
 
     x0_label = ttk.Label(frame, text="x0:")
     x0_label.grid(row=2, column=2)
@@ -363,10 +378,9 @@ if __name__ == "__main__":
     plot_time_button = ttk.Button(frame, text="График U(x)", command=plot_u_t)
     plot_time_button.grid(row=3, column=30, columnspan=2)
 
-    plot_time_button = ttk.Button(frame, text="Сравнение с вар. 3", command=plot_u_t)
+    plot_time_button = ttk.Button(frame, text="Сравнение с вар. 3", command=0)
     plot_time_button.grid(row=4, column=30, columnspan=2)
 
-# Сравнение вариантов еще надо
     update_plot()
 
     root.mainloop()
