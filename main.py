@@ -215,6 +215,38 @@ def plot_param_comparison():
     plt.show()
 
 # --------------------------Влияние m на решение--------------------------
+def plot_mass():
+    epsilonG = float(epsilonG_entry.get())
+    maxCount = float(maxCount_entry.get())
+    maxError = float(maxError_entry.get())
+    h0 = float(h0_entry.get())
+    xMax = float(xMax_entry.get())
+    x_0 = float(x0_entry.get())
+    y_0 = float(u0_entry.get())
+    a1 = float(a1_entry.get())
+    a3 = float(a3_entry.get())
+    step_type = step_type_var.get()
+    m = float(m_entry.get())
+
+    m_values = [0.2, 0.5, 1.0, m]
+
+    plt.close('all')
+    plt.figure(figsize=(8, 6), num="Зависимость решение от m")
+
+    # Влияние a1 на решение
+    for m_val in m_values:
+        func = RungeKutta(h0, x_0, y_0, maxCount, epsilonG, a1, a3, m_val)
+        data = np.array([func.variableStep(xMax, maxError)]) if step_type == "Переменный" else np.array(
+            [func.fixedStep(xMax)])
+        x, u = data.T
+        plt.plot(x, u, label=f'm = {m_val}')
+    plt.xlabel('x')
+    plt.ylabel('Скорость u, м/с')
+    plt.title('Влияние m на решение')
+    plt.grid(True)
+    plt.legend()
+
+    plt.show()
 
 # --------------------------Сравнение вариантов 3 и 4--------------------------
 def comparison_3_and_4():
@@ -322,7 +354,7 @@ if __name__ == "__main__":
     plot_param_button = ttk.Button(frame, text="Влияние a1 и a3", command=plot_param_comparison)
     plot_param_button.grid(row=0, column=30, columnspan=2)
 
-    plot_param_button = ttk.Button(frame, text="Влияние m", command=0)
+    plot_param_button = ttk.Button(frame, text="Влияние m", command=plot_mass)
     plot_param_button.grid(row=1, column=30, columnspan=2)
 
     plot_param_button = ttk.Button(frame, text="Влияние V0", command=plot_speed)
