@@ -4,6 +4,7 @@ import tkinter as tk
 
 from modules.RungeKuttSystem import *
 from tkinter import ttk
+from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 matplotlib.use('TkAgg')
@@ -12,6 +13,7 @@ matplotlib.use('TkAgg')
 def C(x0,y0):
     return y0 / (np.exp(x0))
 
+# --------------------------Вывод таблицы и отрисовка численного решения--------------------------
 def update_plot():
     epsilonG = float(epsilonG_entry.get())
     maxCount = float(maxCount_entry.get())
@@ -92,12 +94,13 @@ def update_plot():
     plt.xlabel("x")
     plt.ylabel("u")
     plt.legend()
-    plt.title("График u(x)")
+    plt.title("График u(x) (численное решение)")
+    plt.grid(True)
 
     plt.draw()
 
-# # Зависимость от начальной скорости
-# def plot_graph():
+# --------------------------Зависимость от начальной скорости--------------------------
+# def plot_speed():
 #     u_e_values = [1, 5.0, 10.0, 15.0]  # Список значений начальной скорости
 #     plt.figure(figsize=(10, 6))  # Размер фигуры для графика
 #
@@ -115,6 +118,7 @@ def update_plot():
 #
 #     plt.show()  # Показываем график
 
+# --------------------------Отрисовка временной реализации для u--------------------------
 def plot_u_t():
     epsilonG = float(epsilonG_entry.get())
     h0 = float(h0_entry.get())
@@ -137,22 +141,28 @@ def plot_u_t():
     plt.title("График u(t)")
     plt.show()
 
+# --------------------------Зависимость от параметров а1 и а3--------------------------
 def plot_param_comparison():
     epsilonG = float(epsilonG_entry.get())
+    maxCount = float(maxCount_entry.get())
+    maxError = float(maxError_entry.get())
     h0 = float(h0_entry.get())
+    xMax = float(xMax_entry.get())
     x_0 = float(x0_entry.get())
     y_0 = float(u0_entry.get())
     a1 = float(a1_entry.get())
     a3 = float(a3_entry.get())
+    step_type = step_type_var.get()
     m = float(m_entry.get())
 
-    a1_values = [0.2, 0.5, 1.0]
-    a3_values = [0.05, 0.1, 0.2]
+    a1_values = [0.2, 0.5, 1.0, a1]
+    a3_values = [0.05, 0.1, 0.2, a3]
 
     # Влияние a1
-    plt.figure(figsize=(14, 6))
-    
-    plt.subplot(1, 2, 1)
+    plt.figure(figsize=(12, 10))
+
+    # график от времени
+    plt.subplot(2, 2, 1)
     for a1_val in a1_values:
         def f_a1(u):
             return - (a1_val * u + a3 * u ** 3) / m
@@ -165,8 +175,22 @@ def plot_param_comparison():
     plt.grid(True)
     plt.legend()
 
+    # График решения
+    plt.subplot(2, 2, 2)
+    for a1_val in a1_values:
+        func = RungeKutta(h0, x_0, y_0, maxCount, epsilonG, a1_val, 1, m)
+        data = np.array([func.variableStep(xMax, maxError)]) if step_type == "Переменный" else np.array(
+            [func.fixedStep(xMax)])
+        x,u = data.T
+        plt.plot(x, u, label=f'a1 = {a1_val}')
+    plt.xlabel('x')
+    plt.ylabel('Скорость u, м/с')
+    plt.title('Влияние a1 на решение')
+    plt.grid(True)
+    plt.legend()
+
     # Влияние a3
-    plt.subplot(1, 2, 2)
+    plt.subplot(2, 2, 3)
     for a3_val in a3_values:
         def f_a3(u):
             return - (a1 * u + a3_val * u ** 3) / m
@@ -178,7 +202,27 @@ def plot_param_comparison():
     plt.grid(True)
     plt.legend()
 
+    # График решения
+    plt.subplot(2, 2, 4)
+    for a3_val in a3_values:
+        func = RungeKutta(h0, x_0, y_0, maxCount, epsilonG, 1, a3_val, m)
+        data = np.array([func.variableStep(xMax, maxError)]) if step_type == "Переменный" else np.array(
+            [func.fixedStep(xMax)])
+        x,u = data.T
+        plt.plot(x, u, label=f'a3 = {a3_val}')
+    plt.xlabel('x')
+    plt.ylabel('Скорость u, м/с')
+    plt.title('Влияние a3 на решение')
+    plt.grid(True)
+    plt.legend()
+
+    plt.subplots_adjust(hspace=0.5)  # hspace задаёт высоту между строками графиков
+
     plt.show()
+
+# --------------------------Сравнение вариантов 3 и 4--------------------------
+def comparison_3_and_4():
+    return 0
 
 if __name__ == "__main__":
     root = tk.Tk()

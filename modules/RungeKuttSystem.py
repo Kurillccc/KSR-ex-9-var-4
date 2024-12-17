@@ -1,5 +1,6 @@
 import numpy as np
 
+# --------------------------Класс для метода РК-4--------------------------
 class RungeKutta:
     def __init__(self, stepSize, initialX, initialY, maxCount, epsilonG, a1, a3, m):
         self.epsilonG = epsilonG
@@ -92,7 +93,7 @@ class RungeKutta:
 
         return steps
 
-
+# --------------------------Функция для метода РК-4 для временных реализаций и тд--------------------------
 def rk4_adaptive(u0, t0, t_max, h0, tol, f):
     t = t0
     u = u0
