@@ -2,10 +2,11 @@ import matplotlib
 import matplotlib.pyplot as plt
 import tkinter as tk
 
-from modules.RungeKuttSystem import *
 from tkinter import ttk
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from modules.RKSystemVar3 import *
+from modules.RungeKuttSystem import *
 
 matplotlib.use('TkAgg')
 
@@ -250,16 +251,41 @@ def plot_mass():
     plt.show()
 
 # --------------------------Сравнение вариантов 3 и 4--------------------------
-# def comparison_3_and_4():
-#     plt.close('all')
-#
-#     def function(x, y):
-#         a1_3 = 1
-#         a3_3 = 1
-#         m_3 = 1
-#         return -((a1_3 / m_3) * y + (a3_3 / m_3) * (pow(y, 2)))
-#
-#     return 0
+def comparison_3_and_4():
+    epsilonG = float(epsilonG_entry.get())
+    maxCount = float(maxCount_entry.get())
+    maxError = float(maxError_entry.get())
+    h0 = float(h0_entry.get())
+    xMax = float(xMax_entry.get())
+    x_0 = float(x0_entry.get())
+    y_0 = float(u0_entry.get())
+    a1 = float(a1_entry.get())
+    a3 = float(a3_entry.get())
+    step_type = step_type_var.get()
+    m = float(m_entry.get())
+
+    plt.close('all')
+    plt.figure(figsize=(8, 6), num="Сравнение вариантов 3 и 4")
+
+    func_3 = RKVar3(h0, x_0, y_0, maxCount, epsilonG, a1, a3, m)
+    data = np.array([func_3.variableStep(xMax, maxError)]) if step_type == "Переменный" else np.array(
+        [func_3.fixedStep(xMax)])
+    x_var_3, y_var_3 = data.T
+    plt.plot(x_var_3, y_var_3, linestyle='--', label="Вариант 3")
+
+    func_4 = RungeKutta(h0, x_0, y_0, maxCount, epsilonG, a1, a3, m)
+    data = np.array([func_4.variableStep(xMax, maxError)]) if step_type == "Переменный" else np.array(
+        [func_4.fixedStep(xMax)])
+    x_var_4, y_var_4 = data.T
+    plt.plot(x_var_4, y_var_4, label="Вариант 4")
+
+    plt.xlabel("x")
+    plt.ylabel("u")
+    plt.legend()
+    plt.title("Сравнение варианта 3 и 4")
+    plt.grid(True)
+
+    plt.show()
 
 if __name__ == "__main__":
     root = tk.Tk()
@@ -385,7 +411,7 @@ if __name__ == "__main__":
     plot_time_button = ttk.Button(frame, text="График U(x)", command=plot_u_t)
     plot_time_button.grid(row=3, column=30, columnspan=2)
 
-    plot_time_button = ttk.Button(frame, text="Сравнение с вар. 3", command=0)
+    plot_time_button = ttk.Button(frame, text="Сравнить с вар. 3", command=comparison_3_and_4)
     plot_time_button.grid(row=4, column=30, columnspan=2)
 
     update_plot()
