@@ -18,7 +18,8 @@ class RungeKutta:
         self.C2 = []
 
     def function(self, x, y):
-        return -((self.a1 / self.m) * x + (self.a3 / self.m) * (x ** 3))
+        y = np.float64(y)
+        return -((self.a1 / self.m) * y + (self.a3 / self.m) * (pow(y, 3)))
 
     def calculateNextY(self, x, y, stepSize):
         k1 = self.function(x, y)

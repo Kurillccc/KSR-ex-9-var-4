@@ -29,7 +29,7 @@ def update_plot():
 
     func = RungeKutta(h0, x_0, y_0, maxCount, epsilonG, a1, a3, m)
     data = np.array([func.variableStep(xMax, maxError)]) if step_type == "Переменный" else np.array([func.fixedStep(xMax)])
-    x, y = data.T
+    x,y = data.T
     V2 = func.V2
     OLP = func.OLP
     Hi = func.Hi
@@ -114,7 +114,7 @@ def plot_speed():
     step_type = step_type_var.get()
     m = float(m_entry.get())
 
-    u_e_values = [1, 2.0, -1, -2.0, y_0]
+    u_e_values = [-2, -1, 1, 2.0, y_0]
 
     plt.close('all')
     plt.figure(figsize=(8, 6), num="Зависимоть решения от начальной скорости")  # Размер фигуры для графика
@@ -229,7 +229,7 @@ def plot_mass():
     step_type = step_type_var.get()
     m = float(m_entry.get())
 
-    m_values = [0.2, 0.5, 1.0, m]
+    m_values = [2, 5, 10, m]
 
     plt.close('all')
     plt.figure(figsize=(8, 6), num="Зависимость решение от m")
@@ -250,9 +250,16 @@ def plot_mass():
     plt.show()
 
 # --------------------------Сравнение вариантов 3 и 4--------------------------
-def comparison_3_and_4():
-    plt.close('all')
-    return 0
+# def comparison_3_and_4():
+#     plt.close('all')
+#
+#     def function(x, y):
+#         a1_3 = 1
+#         a3_3 = 1
+#         m_3 = 1
+#         return -((a1_3 / m_3) * y + (a3_3 / m_3) * (pow(y, 2)))
+#
+#     return 0
 
 if __name__ == "__main__":
     root = tk.Tk()
@@ -279,7 +286,7 @@ if __name__ == "__main__":
     maxCount_label.grid(row=0, column=0)
     maxCount_entry = ttk.Entry(frame)
     maxCount_entry.grid(row=0, column=1)
-    maxCount_entry.insert(0, "10000")
+    maxCount_entry.insert(0, "100000")
 
     maxError_label = ttk.Label(frame, text="Макс. ошибка:")
     maxError_label.grid(row=1, column=0)
@@ -303,7 +310,7 @@ if __name__ == "__main__":
     u0_label.grid(row=1, column=2)
     u0_entry = ttk.Entry(frame)
     u0_entry.grid(row=1, column=3)
-    u0_entry.insert(0, "0")
+    u0_entry.insert(0, "15")
 
     x0_label = ttk.Label(frame, text="x0:")
     x0_label.grid(row=2, column=2)
