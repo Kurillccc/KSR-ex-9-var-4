@@ -117,7 +117,6 @@ def plot_speed():
 
     u_e_values = [-2, -1, 1, 2.0, y_0]
 
-    plt.close('all')
     plt.figure(figsize=(8, 6), num="Зависимоть решения от начальной скорости")  # Размер фигуры для графика
 
     for u_e_val in u_e_values:
@@ -382,7 +381,7 @@ if __name__ == "__main__":
     update_button.grid(row=11, column=1)
 
 
-    columns = ("i", "xi", "vi", "v2i", "vi-v2i", "OLP", "hi", "C1", "C2", "ui", "ui-vi")
+    columns = ("i", "xi", "vi", "v2i", "vi-v2i", "OLP", "hi", "C1", "C2")
     tree = ttk.Treeview(columns=columns, show="headings")
 
     vsb = ttk.Scrollbar(root, orient="vertical", command=tree.yview)

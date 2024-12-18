@@ -16,6 +16,7 @@ class RungeKutta:
         self.m = m
         self.C1 = []
         self.C2 = []
+        self.C2.append(0)
 
     def function(self, x, y):
         y = np.float64(y)
@@ -57,13 +58,13 @@ class RungeKutta:
             nextY = self.calculateNextY(currentStep[0], currentStep[1], currentStepSize)
             nextYHalfStep = self.calculateNextY(currentStep[0], currentStep[1], currentStepSize / 2)
             nextYHalfStep = self.calculateNextY(currentStep[0] + currentStepSize / 2, nextYHalfStep, currentStepSize / 2)
-            errorEstimate = abs((nextYHalfStep - nextY) / 15)
+            errorEstimate = abs((nextYHalfStep - nextY))
             if (errorEstimate <= maxError) and (errorEstimate >= (maxError / 32)):
                 nextStep = [nextX, nextY]
                 steps.append(nextStep)
                 currentStep = nextStep
                 self.V2.append(nextYHalfStep)
-                self.OLP.append(errorEstimate * 16)
+                self.OLP.append(errorEstimate)
                 self.Hi.append(currentStepSize)
                 self.C1.append(C1)
                 self.C2.append(C2)
@@ -77,7 +78,7 @@ class RungeKutta:
                 steps.append(nextStep)
                 currentStep = nextStep
                 self.V2.append(nextYHalfStep)
-                self.OLP.append(errorEstimate * 16)
+                self.OLP.append(errorEstimate)
                 self.Hi.append(currentStepSize)
                 self.C1.append(C1)
                 self.C2.append(C2)
