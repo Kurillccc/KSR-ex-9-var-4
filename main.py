@@ -153,7 +153,7 @@ def plot_u_t():
         [func.fixedStep(xMax)])
     x, y = data.T
 
-    plt.close('all')
+    
 
     plt.figure(figsize=(8, 6), num="Отрисовка решения в отдельном окне")
     plt.plot(x, y, label=f'u(x)')
@@ -181,7 +181,7 @@ def plot_param_comparison():
     a1_values = [0.2, 0.5, 1.0, a1]
     a3_values = [0.05, 0.1, 0.2, a3]
 
-    plt.close('all')
+    
     plt.figure(figsize=(12, 7), num="Зависимость от параметров а1 и а3")
 
     # Влияние a1 на решение
@@ -232,7 +232,7 @@ def plot_mass():
 
     m_values = [2, 5, 10, m]
 
-    plt.close('all')
+    
     plt.figure(figsize=(8, 6), num="Зависимость решение от m")
 
     # Влияние a1 на решение
@@ -264,7 +264,7 @@ def comparison_3_and_4():
     step_type = step_type_var.get()
     m = float(m_entry.get())
 
-    plt.close('all')
+    
     plt.figure(figsize=(8, 6), num="Сравнение вариантов 3 и 4")
 
     func_3 = RKVar3(h0, x_0, y_0, maxCount, epsilonG, a1, a3, m)
