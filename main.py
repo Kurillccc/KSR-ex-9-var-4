@@ -406,29 +406,35 @@ if __name__ == "__main__":
 
     root.geometry(f'{window_width}x{window_height}+{position_right}+{position_top}')
 
-    maxCount_label = ttk.Label(frame, text="Макс. число итераций:")
-    maxCount_label.grid(row=0, column=0)
-    maxCount_entry = ttk.Entry(frame)
-    maxCount_entry.grid(row=0, column=1)
-    maxCount_entry.insert(0, "100000")
-
     maxError_label = ttk.Label(frame, text="Eps. контроля:")
-    maxError_label.grid(row=1, column=0)
+    maxError_label.grid(row=0, column=0)
     maxError_entry = ttk.Entry(frame)
-    maxError_entry.grid(row=1, column=1)
+    maxError_entry.grid(row=0, column=1)
     maxError_entry.insert(0, "0.0001")
 
-    h0_label = ttk.Label(frame, text="h0:")
-    h0_label.grid(row=0, column=2)
-    h0_entry = ttk.Entry(frame)
-    h0_entry.grid(row=0, column=3)
-    h0_entry.insert(0, "0.01")
+    maxCount_label = ttk.Label(frame, text="Макс. число итераций:")
+    maxCount_label.grid(row=2, column=0)
+    maxCount_entry = ttk.Entry(frame)
+    maxCount_entry.grid(row=2, column=1)
+    maxCount_entry.insert(0, "100000")
 
     xMax_label = ttk.Label(frame, text="Правая граница:")
     xMax_label.grid(row=3, column=0)
     xMax_entry = ttk.Entry(frame)
     xMax_entry.grid(row=3, column=1)
     xMax_entry.insert(0, "2")
+
+    epsilonG_label = ttk.Label(frame, text="Eps. граничный:")
+    epsilonG_label.grid(row=4, column=0)
+    epsilonG_entry = ttk.Entry(frame)
+    epsilonG_entry.grid(row=4, column=1)
+    epsilonG_entry.insert(0, "0.001")
+
+    h0_label = ttk.Label(frame, text="h0:")
+    h0_label.grid(row=0, column=2)
+    h0_entry = ttk.Entry(frame)
+    h0_entry.grid(row=0, column=3)
+    h0_entry.insert(0, "0.01")
 
     u0_label = ttk.Label(frame, text="u0:")
     u0_label.grid(row=1, column=2)
@@ -441,12 +447,6 @@ if __name__ == "__main__":
     x0_entry = ttk.Entry(frame)
     x0_entry.grid(row=2, column=3)
     x0_entry.insert(0, "0")
-
-    epsilonG_label = ttk.Label(frame, text="Eps. граничный:")
-    epsilonG_label.grid(row=4, column=0)
-    epsilonG_entry = ttk.Entry(frame)
-    epsilonG_entry.grid(row=4, column=1)
-    epsilonG_entry.insert(0, "0.001")
 
     task_var = tk.StringVar()
 
@@ -506,16 +506,16 @@ if __name__ == "__main__":
     plot_param_button = ttk.Button(frame, text="Влияние V0", command=plot_speed)
     plot_param_button.grid(row=2, column=30, columnspan=2)
 
-    plot_time_button = ttk.Button(frame, text="График U(x)", command=plot_u_t)
+    plot_time_button = ttk.Button(frame, text="Влияние h0", command=plot_h0)
     plot_time_button.grid(row=3, column=30, columnspan=2)
 
-    plot_time_button = ttk.Button(frame, text="Сравнить с вар. 3", command=comparison_3_and_4)
+    plot_time_button = ttk.Button(frame, text="Влияние Eps. контроля", command=plot_Eps)
     plot_time_button.grid(row=4, column=30, columnspan=2)
 
-    plot_time_button = ttk.Button(frame, text="Влияние h0", command=plot_h0)
+    plot_time_button = ttk.Button(frame, text="Сравнить с вар. 3", command=comparison_3_and_4)
     plot_time_button.grid(row=5, column=30, columnspan=2)
 
-    plot_time_button = ttk.Button(frame, text="Влияние Eps. контроля", command=plot_Eps)
+    plot_time_button = ttk.Button(frame, text="График U(x)", command=plot_u_t)
     plot_time_button.grid(row=6, column=30, columnspan=2)
 
     update_plot()

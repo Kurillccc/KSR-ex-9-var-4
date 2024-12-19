@@ -1,6 +1,6 @@
 import numpy as np
 
-# --------------------------Класс для метода РК-4--------------------------
+# --------------------------Класс для метода РК-4 варианта 3--------------------------
 class RKVar3:
     def __init__(self, stepSize, initialX, initialY, maxCount, epsilonG, a1, a3, m):
         self.epsilonG = epsilonG
