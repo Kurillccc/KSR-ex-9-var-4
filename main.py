@@ -40,6 +40,16 @@ def update_plot():
     tree.delete(*tree.get_children())
 
     Data = []
+    if step_type == "Переменный":
+        Data.append((0, x_0, y_0, "", "",
+                     "", h0,
+                     "",
+                     ""))
+    else:
+        Data.append((0, x_0, y_0, "", "",
+                     "", "",
+                     "",
+                     ""))
     for i in range(1, len(x)):
         Data.append((i, x[i], y[i], V2[i-1] if i-1 < len(V2) else "", y[i] - V2[i-1] if i-1 < len(V2) else "",
                      OLP[i-1] if i-1 < len(OLP) else "", Hi[i-1] if i-1 < len(Hi) else "", C1[i-1] if i-1 < len(C1) else "",
@@ -264,15 +274,15 @@ def comparison_3_and_4():
     m = float(m_entry.get())
 
     
-    plt.figure(figsize=(8, 6), num="Сравнение вариантов 3 и 4")
-
-    func_3 = RKVar3(h0, x_0, y_0, maxCount, epsilonG, a1, a3, m)
+    plt.figure(figsize=(12, 7), num="Сравнение вариантов 3 и 4")
+    plt.subplot(1, 2, 1)
+    func_3 = RKVar3(h0, x_0, 5, maxCount, epsilonG, a1, a3, m)
     data = np.array([func_3.variableStep(xMax, maxError)]) if step_type == "Переменный" else np.array(
         [func_3.fixedStep(xMax)])
     x_var_3, y_var_3 = data.T
     plt.plot(x_var_3, y_var_3, linestyle='--', label="Вариант 3")
 
-    func_4 = RungeKutta(h0, x_0, y_0, maxCount, epsilonG, a1, a3, m)
+    func_4 = RungeKutta(h0, x_0, 5, maxCount, epsilonG, a1, a3, m)
     data = np.array([func_4.variableStep(xMax, maxError)]) if step_type == "Переменный" else np.array(
         [func_4.fixedStep(xMax)])
     x_var_4, y_var_4 = data.T
@@ -281,10 +291,99 @@ def comparison_3_and_4():
     plt.xlabel("x")
     plt.ylabel("u")
     plt.legend()
-    plt.title("Сравнение варианта 3 и 4")
+    plt.title('V > 1 (V = 5)')
+    plt.grid(True)
+    plt.subplot(1, 2, 2)
+
+    func_3 = RKVar3(h0, x_0, 0.5, maxCount, epsilonG, a1, a3, m)
+    data = np.array([func_3.variableStep(xMax, maxError)]) if step_type == "Переменный" else np.array(
+        [func_3.fixedStep(xMax)])
+    x_var_3, y_var_3 = data.T
+    plt.plot(x_var_3, y_var_3, linestyle='--', label="Вариант 3")
+
+    func_4 = RungeKutta(h0, x_0, 0.5, maxCount, epsilonG, a1, a3, m)
+    data = np.array([func_4.variableStep(xMax, maxError)]) if step_type == "Переменный" else np.array(
+        [func_4.fixedStep(xMax)])
+    x_var_4, y_var_4 = data.T
+    plt.plot(x_var_4, y_var_4, label="Вариант 4")
+
+    plt.xlabel("x")
+    plt.ylabel("u")
+    plt.legend()
+    plt.title('V < 1 (V = 0.5)')
     plt.grid(True)
 
     plt.show()
+
+def plot_h0():
+    epsilonG = float(epsilonG_entry.get())
+    maxCount = float(maxCount_entry.get())
+    maxError = float(maxError_entry.get())
+    xMax = float(xMax_entry.get())
+    x_0 = float(x0_entry.get())
+    y_0 = float(u0_entry.get())
+    a1 = float(a1_entry.get())
+    a3 = float(a3_entry.get())
+    step_type = step_type_var.get()
+    m = float(m_entry.get())
+
+    y_0 = 0.5
+
+    h0_values = [0.9, 0.5, 0.05, 1e-5]  # Разные значения начального шага
+
+    plt.figure(figsize=(8, 6), num="Зависимость решения от h₀ (начальный шаг)")
+
+    # Влияние h0 на решение
+    for h0 in h0_values:
+        func = RungeKutta(h0, x_0, y_0, maxCount, epsilonG, a1, a3, m)
+        data = np.array([func.variableStep(xMax, maxError)]) if step_type == "Переменный" else np.array(
+            [func.fixedStep(xMax)])
+        x, u = data.T
+        plt.plot(x, u, label=f'h₀ = {h0}')
+    plt.xlabel('x')
+    plt.ylabel('Скорость u, м/с')
+    plt.title('Влияние начального шага (h₀) на решение')
+    plt.grid(True)
+    plt.legend()
+
+    plt.show()
+
+def plot_Eps():
+    maxCount = float(maxCount_entry.get())
+    maxError = float(maxError_entry.get())
+    h0 = float(h0_entry.get())
+    xMax = float(xMax_entry.get())
+    x_0 = float(x0_entry.get())
+    y_0 = float(u0_entry.get())
+    a1 = float(a1_entry.get())
+    a3 = float(a3_entry.get())
+    step_type = step_type_var.get()
+    m = float(m_entry.get())
+    epsilonG = float(epsilonG_entry.get())
+
+    y_0 = 0.5
+
+    maxErrorss = [1e-2, 1e-3, 1e-4, 1e-5]  # Разные значения контроля погрешности
+
+    plt.figure(figsize=(8, 6), num="Зависимость решения от ε (контроль погрешности)")
+
+    # Влияние epsilonG на решение
+    for maxError in maxErrorss:
+        func = RungeKutta(h0, x_0, y_0, maxCount, epsilonG, a1, a3, m)
+        data = np.array([func.variableStep(xMax, maxError)]) if step_type == "Переменный" else np.array(
+            [func.fixedStep(xMax)])
+        x, u = data.T
+        plt.plot(x, u, label=f'ε = {maxError}')
+    plt.xlabel('x')
+    plt.ylabel('Скорость u, м/с')
+    plt.title('Влияние контроля погрешности (ε) на решение')
+    plt.grid(True)
+    plt.legend()
+
+    plt.show()
+
+
+
 
 if __name__ == "__main__":
     root = tk.Tk()
@@ -313,7 +412,7 @@ if __name__ == "__main__":
     maxCount_entry.grid(row=0, column=1)
     maxCount_entry.insert(0, "100000")
 
-    maxError_label = ttk.Label(frame, text="Макс. ошибка:")
+    maxError_label = ttk.Label(frame, text="Eps. контроля:")
     maxError_label.grid(row=1, column=0)
     maxError_entry = ttk.Entry(frame)
     maxError_entry.grid(row=1, column=1)
@@ -329,7 +428,7 @@ if __name__ == "__main__":
     xMax_label.grid(row=3, column=0)
     xMax_entry = ttk.Entry(frame)
     xMax_entry.grid(row=3, column=1)
-    xMax_entry.insert(0, "1.69")
+    xMax_entry.insert(0, "2")
 
     u0_label = ttk.Label(frame, text="u0:")
     u0_label.grid(row=1, column=2)
@@ -381,7 +480,7 @@ if __name__ == "__main__":
     update_button.grid(row=11, column=1)
 
 
-    columns = ("i", "xi", "vi", "v2i", "vi-v2i", "OLP", "hi", "C1", "C2")
+    columns = ("i", "xi", "vi", "v2i", "vi-v2i", "|OLP|", "hi", "C1", "C2")
     tree = ttk.Treeview(columns=columns, show="headings")
 
     vsb = ttk.Scrollbar(root, orient="vertical", command=tree.yview)
@@ -412,6 +511,12 @@ if __name__ == "__main__":
 
     plot_time_button = ttk.Button(frame, text="Сравнить с вар. 3", command=comparison_3_and_4)
     plot_time_button.grid(row=4, column=30, columnspan=2)
+
+    plot_time_button = ttk.Button(frame, text="Влияние h0", command=plot_h0)
+    plot_time_button.grid(row=5, column=30, columnspan=2)
+
+    plot_time_button = ttk.Button(frame, text="Влияние Eps. контроля", command=plot_Eps)
+    plot_time_button.grid(row=6, column=30, columnspan=2)
 
     update_plot()
 
